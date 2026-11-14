@@ -1,0 +1,55 @@
+#!/usr/bin/env sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+BUILD_DIR="$ROOT/build"
+
+# qmake and pkg-config split a path at its spaces, and only after FFmpeg's long
+# compile would it show: said now, before anything has started.
+case "$ROOT" in
+  *[[:space:]]*)
+    echo "omabroadcast cannot be built in a path with spaces: $ROOT" >&2
+    echo "Move the folder to one without, and run this again." >&2
+    exit 1
+    ;;
+esac
+
+if command -v qmake6 >/dev/null 2>&1; then
+  QMAKE=qmake6
+elif command -v qmake >/dev/null 2>&1; then
+  QMAKE=qmake
+else
+  echo "qmake6 or qmake is required to build omabroadcast." >&2
+  exit 1
+fi
+
+JOBS="$(nproc 2>/dev/null || echo 1)"
+
+"$ROOT/bin/shaders"
+
+# The FFmpeg 9.1 the program carries.
+"$ROOT/bin/build-ffmpeg"
+set --
+if [ -d "$BUILD_DIR/ffmpeg/usr/lib/omabroadcast/ffmpeg/lib/pkgconfig" ]; then
+  PKG_CONFIG_PATH="$BUILD_DIR/ffmpeg/usr/lib/omabroadcast/ffmpeg/lib/pkgconfig${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}"
+  export PKG_CONFIG_PATH
+  set -- "CONFIG+=carried_ffmpeg" "CARRIED_FFMPEG=$BUILD_DIR/ffmpeg/usr/lib/omabroadcast/ffmpeg"
+fi
+# For the package (its PKGBUILD sets this): no development library path.
+if [ -n "${OMABROADCAST_PACKAGE:-}" ]; then set -- "$@" "CONFIG+=packaged"; fi
+
+mkdir -p "$BUILD_DIR"
+cd "$BUILD_DIR"
+
+"$QMAKE" "$ROOT/omabroadcast.pro" "$@"
+# Linked afresh each time. A development build and the package's share their
+# objects but not their run paths, and make does not link again for flags alone,
+# so one would otherwise carry the other's and run on the wrong FFmpeg.
+rm -f "$BUILD_DIR/omabroadcast"
+make -j"$JOBS"
+
+# The browser helper, where Qt WebEngine is installed (nothing otherwise).
+mkdir -p "$BUILD_DIR/browser"
+(cd "$BUILD_DIR/browser" && "$QMAKE" "$ROOT/browser/omabroadcast-browser.pro" && make -j"$JOBS")
+
+echo "Built $BUILD_DIR/omabroadcast"

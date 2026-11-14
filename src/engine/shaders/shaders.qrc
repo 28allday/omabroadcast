@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file alias="transition.spv">gen/transition.spv</file>
+        <file alias="convert.spv">gen/convert.spv</file>
+        <file alias="composite.spv">gen/composite.spv</file>
+        <file alias="yuv.spv">gen/yuv.spv</file>
+        <file alias="preview.spv">gen/preview.spv</file>
+        <file alias="yuv_in.spv">gen/yuv_in.spv</file>
+        <file alias="denoise.spv">gen/denoise.spv</file>
+        <file alias="deinterlace.spv">gen/deinterlace.spv</file>
+        <file alias="filter.spv">gen/filter.spv</file>
+        <file alias="filter32.spv">gen/filter32.spv</file>
+        <file alias="nn.spv">gen/nn.spv</file>
+    </qresource>
+</RCC>

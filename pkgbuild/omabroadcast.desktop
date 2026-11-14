@@ -1,0 +1,25 @@
+[Desktop Entry]
+Type=Application
+Name=OmaBroadcast
+GenericName=Live Production
+Comment=Record, stream and compose live video
+Exec=omabroadcast %f
+Icon=omabroadcast
+Terminal=false
+Categories=AudioVideo;Video;Recorder;
+Keywords=record;screen;stream;broadcast;capture;omarchy;
+StartupWMClass=omabroadcast
+MimeType=video/mp4;video/x-matroska;video/quicktime;video/webm;video/x-msvideo;image/png;image/jpeg;image/gif;image/webp;
+Actions=record;replay;studio-mode;
+
+[Desktop Action record]
+Name=Start or Stop Recording
+Exec=omabroadcast ctl record.toggle
+
+[Desktop Action replay]
+Name=Save Replay
+Exec=omabroadcast ctl replay.save
+
+[Desktop Action studio-mode]
+Name=Studio Mode On or Off
+Exec=omabroadcast ctl studiomode.toggle

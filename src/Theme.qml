@@ -1,0 +1,176 @@
+pragma Singleton
+
+import QtQuick
+import OmaBroadcast 1.0
+
+// The single source of every colour, dimension, radius, duration and type size
+// in OmaBroadcast. Nothing outside this file may contain a colour literal or a
+// magic dimension. The palette is the shared Oma design system, and it is
+// FIXED: the program preview is judged by eye, and a surround that changes hue
+// changes how the picture reads.
+//
+// The one exception is the ACCENT, which follows the Omarchy theme. Buttons,
+// selection and focus are chrome and belong to the desktop. The preview is not
+// chrome; recording state is the one signal red, never the accent.
+QtObject {
+    id: theme
+
+    readonly property string appName: "OmaBroadcast"
+
+    // ── Colour ──────────────────────────────────────────────────────────────
+    readonly property color windowBg: "#0B0E13"
+    readonly property color panelBg: "#111722"
+    readonly property color panelRaised: "#171E2A"
+    readonly property color controlBg: "#1B2431"
+    readonly property color controlHover: "#222D3D"
+    readonly property color border: highContrast ? "#6E7C92" : "#293241"
+    readonly property color borderStrong: highContrast ? "#9AA8BD" : "#3A4658"
+
+    readonly property color textPrimary: "#E7EDF7"
+    readonly property color textSecondary: highContrast ? "#D2DAE6" : "#A7B1C1"
+    readonly property color textMuted: highContrast ? "#AFB9C8" : "#727E90"
+
+    // The desktop's accent when Omarchy is there, the Oma accent when it is not
+    // (plain Arch, a container, CI) — and the app has to look finished either way.
+    readonly property color omaAccent: "#27C2FF"
+    readonly property color accent: OmarchyTheme.accentFollowed ? OmarchyTheme.accent : omaAccent
+    readonly property color accentPressed: Qt.darker(accent, 1.35)
+    readonly property color warning: "#FBBF24"
+    readonly property color danger: "#EF4444"
+    readonly property color success: "#34D399"
+
+    // Derived: an accent can be pale gold or deep violet and the label on top
+    // has to read on both, so Rec.709 luminance decides near-black or near-white.
+    readonly property color accentText:
+        (0.2126 * accent.r + 0.7152 * accent.g + 0.0722 * accent.b) > 0.55 ? "#04121A" : "#F2F7FF"
+
+    function hovered(base) { return Qt.lighter(base, 1.06) }
+    function pressedOn(base) { return Qt.darker(base, 1.08) }
+    function withAlpha(c, a) { return Qt.rgba(c.r, c.g, c.b, a) }
+    // "1 style" / "18 styles": no translator is loaded, so %n forms would
+    // print their "(s)" literally.
+    function plural(n, one, many) { return n + " " + (n === 1 ? one : many) }
+    readonly property real disabledOpacity: 0.38
+
+    // ── The program surface ────────────────────────────────────────────────
+    // Darker than the panels so the picture reads as the object and the
+    // surround as nothing.
+    readonly property color pasteboard: "#1A1F26"
+    readonly property color showBg: "#000000"
+    // Recording is the one state that must never be mistaken for a selection.
+    readonly property color recording: danger
+    readonly property color live: success
+
+    // ── Meters ───────────────────────────────────────────────────────────────
+    // Green to amber to red by level, the convention every mixer shares.
+    readonly property color meterLow: success
+    readonly property color meterMid: warning
+    readonly property color meterHigh: danger
+    readonly property color meterTrack: controlBg
+    readonly property int hMeter: 8
+
+    // ── Canvas editing ───────────────────────────────────────────────────────
+    readonly property color selectionOutline: accent
+    readonly property color handleBg: windowBg
+    readonly property color snapGuide: accent
+    readonly property color hoverOutline: withAlpha(textPrimary, 0.45)
+    readonly property int szHandle: 10
+    readonly property int szHandleHit: 6
+    readonly property int snapPixels: 8
+    readonly property real rotateSnapDegrees: 15
+
+    // ── Spacing ─────────────────────────────────────────────────────────────
+    readonly property int s1: Math.round(4 * densityScale)
+    readonly property int s2: Math.round(8 * densityScale)
+    readonly property int s3: Math.round(12 * densityScale)
+    readonly property int s4: Math.round(16 * densityScale)
+    readonly property int s5: Math.round(24 * densityScale)
+    readonly property int s6: Math.round(40 * densityScale)
+
+    // ── Radius ──────────────────────────────────────────────────────────────
+    readonly property int rControl: 4
+    readonly property int rMenu: 6
+    readonly property int rCard: 6
+    readonly property int rPanel: 0
+    readonly property int rChip: 3
+    readonly property int rHandle: 3
+
+    // ── Lines ───────────────────────────────────────────────────────────────
+    readonly property int hairline: 1
+    readonly property int focusRing: 1
+    readonly property int selectionRing: 2
+    readonly property int activeUnderline: 2
+
+    // ── Density ─────────────────────────────────────────────────────────────
+    property string density: "compact"
+    readonly property real densityScale: density === "comfortable" ? 1.25
+                                       : density === "normal" ? 1.12
+                                       : 1.0
+
+    // ── Type ────────────────────────────────────────────────────────────────
+    readonly property string fontFamily: {
+        const families = Qt.fontFamilies()
+        if (families.indexOf("Inter") >= 0) return "Inter"
+        if (families.indexOf("Noto Sans") >= 0) return "Noto Sans"
+        return "sans-serif"
+    }
+    readonly property string monoFamily: {
+        const families = Qt.fontFamilies()
+        if (families.indexOf("JetBrainsMono Nerd Font") >= 0) return "JetBrainsMono Nerd Font"
+        if (families.indexOf("Noto Sans Mono") >= 0) return "Noto Sans Mono"
+        return "monospace"
+    }
+
+    readonly property int fsBase: 12
+    readonly property int fsLabel: 12
+    readonly property int fsControl: 13
+    readonly property int fsHeading: 13
+    readonly property int fsTitle: 15
+    readonly property int fsSection: 14
+    readonly property int fsCaption: 10
+    readonly property int fsDisplay: 30
+    readonly property int fsQuote: 18
+    readonly property int wHeading: Font.DemiBold
+    readonly property int wNormal: Font.Normal
+    readonly property real capsTracking: 0.8
+
+
+    // ── Control metrics ─────────────────────────────────────────────────────
+    readonly property int hTitleBar: 34
+    readonly property int hToolbar: Math.round(48 * densityScale)
+    readonly property int hStatusBar: 28
+    readonly property int hControl: Math.round(28 * densityScale)
+    readonly property int hToolButton: Math.round(34 * densityScale)
+    readonly property int hRow: Math.round(30 * densityScale)
+    readonly property int hRailRow: Math.round(36 * densityScale)
+    readonly property int hTab: Math.round(32 * densityScale)
+    readonly property int hCardHeader: Math.round(36 * densityScale)
+    readonly property int hNavHeader: Math.round(36 * densityScale)
+    readonly property int hToolTile: Math.round(58 * densityScale)
+    readonly property int wSidebar: 248
+    readonly property int wFactLabel: 112
+    // The inspector's label column, where a row is a label then its control.
+    readonly property int wInspectorLabel: 72
+    readonly property int wInspector: 320
+    readonly property int wTooltip: 360
+    readonly property int wSheet: 520
+    readonly property int wSettingsNav: 170   // the Settings page list
+    readonly property int hSettings: 620      // Settings at most, so pages stay put
+    readonly property int szIcon: 16
+    readonly property int szIconLarge: 20
+    readonly property int szIconHero: 40
+    readonly property int szIconHit: Math.round(28 * densityScale)
+    readonly property int szStatusDot: 8
+    readonly property int wSplitter: 4
+
+    // ── Motion ──────────────────────────────────────────────────────────────
+    // Hooks for the suite's accessibility settings; OmaBroadcast has no
+    // settings for them yet.
+    property bool reducedMotion: false
+    property bool highContrast: false
+    readonly property int dFast: reducedMotion ? 0 : 100
+    readonly property int dNormal: reducedMotion ? 0 : 130
+    readonly property int dSlow: 160
+    readonly property int easing: Easing.OutCubic
+    readonly property int tooltipDelay: 450
+}

@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+PKGBUILD_DIR="$ROOT/pkgbuild"
+
+# bin/build refuses these; here too, before makepkg installs what building needs.
+case "$ROOT" in
+  *[[:space:]]*)
+    echo "omabroadcast cannot be built in a path with spaces: $ROOT" >&2
+    echo "Move the folder to one without, and run this again." >&2
+    exit 1
+    ;;
+esac
+
+if ! command -v makepkg >/dev/null 2>&1; then
+  echo "makepkg is required to build and install the Arch package." >&2
+  exit 1
+fi
+
+# makepkg installs what building needs (-s) before the PKGBUILD's build()
+# runs ./bin/build, then installs the package (-i).
+cd "$PKGBUILD_DIR"
+exec makepkg -fsi "$@"

@@ -1,0 +1,29 @@
+#!/usr/bin/env sh
+# Compile the engine's GLSL compute shaders to SPIR-V. Run by bin/build; needs glslangValidator (package: glslang).
+set -eu
+
+ROOT="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)"
+SRC="$ROOT/src/engine/shaders"
+OUT="$SRC/gen"
+
+if command -v glslangValidator >/dev/null 2>&1; then
+  GLSL="glslangValidator -V"
+elif command -v glslc >/dev/null 2>&1; then
+  GLSL="glslc"
+else
+  echo "glslangValidator (package glslang) is required to build omabroadcast's shaders." >&2
+  exit 1
+fi
+
+mkdir -p "$OUT"
+for f in "$SRC"/*.comp; do
+  name="$(basename "$f" .comp)"
+  out="$OUT/$name.spv"
+  if [ ! -f "$out" ] || [ "$f" -nt "$out" ] || [ "$SRC/common.glsl" -nt "$out" ]; then
+    $GLSL -o "$out" "$f"
+  fi
+done
+# The filter shader again, writing 32-bit pictures.
+if [ ! -f "$OUT/filter32.spv" ] || [ "$SRC/filter.comp" -nt "$OUT/filter32.spv" ] || [ "$SRC/common.glsl" -nt "$OUT/filter32.spv" ]; then
+  $GLSL -DDST_FORMAT=rgba32f -o "$OUT/filter32.spv" "$SRC/filter.comp"
+fi

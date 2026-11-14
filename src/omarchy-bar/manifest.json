@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "id": "nosignal.omabroadcast",
+  "name": "OmaBroadcast",
+  "version": "1.0.0",
+  "author": "Gavin Nugent",
+  "license": "MIT",
+  "description": "OmaBroadcast in the bar: show or hide its window, start and stop recording and streaming, and see at a glance that it is live. Installed by OmaBroadcast; turn it off in its Settings.",
+  "kinds": ["bar-widget"],
+  "entryPoints": {
+    "barWidget": "BarWidget.qml"
+  },
+  "barWidget": {
+    "displayName": "OmaBroadcast",
+    "description": "Click to show or hide the window, right-click for recording and streaming. Red while on air.",
+    "category": "Media",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}

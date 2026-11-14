@@ -1,0 +1,123 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Main.qml</file>
+        <file>LaunchWindow.qml</file>
+        <file>PrompterWindow.qml</file>
+        <file>PlaybackWindow.qml</file>
+        <file>WindowEdges.qml</file>
+        <file>launch/quotes.json</file>
+        <file compress="0">launch/spectrum.webp</file>
+        <file alias="launch/logo.svg">../pkgbuild/omabroadcast.svg</file>
+        <file>Theme.qml</file>
+        <file>Sheet.qml</file>
+        <file>SectionLabel.qml</file>
+        <file>FilterChain.qml</file>
+        <file>ColourWheel.qml</file>
+        <file>LevelMeter.qml</file>
+        <file>AudioChannel.qml</file>
+        <file>AudioAdvancedControls.qml</file>
+        <file>AudioMixerPanel.qml</file>
+        <file>GlobalAudioDevicesSheet.qml</file>
+        <file>MeterControls.qml</file>
+        <file>AudioFiltersSheet.qml</file>
+        <file>VideoFiltersSheet.qml</file>
+        <file>AudioTracks.qml</file>
+        <file>AudioTargetPicker.qml</file>
+        <file>AudioSourceMenu.qml</file>
+        <file>RecordButton.qml</file>
+        <file>StreamSheet.qml</file>
+        <file>InspectorSection.qml</file>
+        <file>DockTwirl.qml</file>
+        <file>SettingsSheet.qml</file>
+        <file>HelpSheet.qml</file>
+        <file>HelpGuide.qml</file>
+        <file>HelpTopics.qml</file>
+        <file>HelpCoach.qml</file>
+        <file>TransformOverlay.qml</file>
+        <file>ItemMenu.qml</file>
+        <file>NameSheet.qml</file>
+        <file>ProfilesSheet.qml</file>
+        <file>ScenesPanel.qml</file>
+        <file>TransitionControls.qml</file>
+        <file>TransitionSheet.qml</file>
+        <file>StudioTransitionSheet.qml</file>
+        <file>StudioControls.qml</file>
+        <file>ProjectorWindow.qml</file>
+        <file>InteractWindow.qml</file>
+        <file>BrowserDockView.qml</file>
+        <file>BrowserDockProfile.qml</file>
+        <file>BrowserDocksSheet.qml</file>
+        <file>KeyField.qml</file>
+        <file>HotkeysPage.qml</file>
+        <file>SwitcherSheet.qml</file>
+        <file>OutputTimerSheet.qml</file>
+        <file>SetupSheet.qml</file>
+        <file>RemoteControlSheet.qml</file>
+        <file>ScriptsSheet.qml</file>
+        <file>MultiviewContent.qml</file>
+        <file>MultiviewTile.qml</file>
+        <file>SourcesPanel.qml</file>
+        <file>ItemInspector.qml</file>
+        <file>TransformControls.qml</file>
+        <file>TransformSheet.qml</file>
+        <file>ContextBar.qml</file>
+        <file>DockMenuButton.qml</file>
+        <file alias="omabroadcast.svg">../pkgbuild/omabroadcast.svg</file>
+        <file>omarchy-bar/manifest.json</file>
+        <file>omarchy-bar/BarWidget.qml</file>
+        <file>omarchy-bar/Panel.qml</file>
+        <file>RegionSelectionSheet.qml</file>
+        <file>ColourField.qml</file>
+        <file>NumField.qml</file>
+        <file>FilterSlider.qml</file>
+        <file>MissingFilesSheet.qml</file>
+        <file>StatsPanel.qml</file>
+        <file>LogSheet.qml</file>
+        <file>CrashSheet.qml</file>
+        <file>SafeModeBanner.qml</file>
+        <file>RepairSheet.qml</file>
+        <file>RemuxSheet.qml</file>
+        <file>SlideshowImagesSheet.qml</file>
+        <file>DirectCaptureSheet.qml</file>
+        <file>canvascursor.js</file>
+        <file>numbers.js</file>
+        <file>transform.js</file>
+        <file alias="ui/Sheets.qml">Sheets.qml</file>
+        <file>ui/Icon.qml</file>
+        <file>ui/icons/Icons.qml</file>
+    </qresource>
+    <qresource prefix="/qt/qml/OmaBroadcastStyle">
+        <file alias="ApplicationWindow.qml">style/OmaBroadcastStyle/ApplicationWindow.qml</file>
+        <file alias="Button.qml">style/OmaBroadcastStyle/Button.qml</file>
+        <file alias="CheckBox.qml">style/OmaBroadcastStyle/CheckBox.qml</file>
+        <file alias="ComboBox.qml">style/OmaBroadcastStyle/ComboBox.qml</file>
+        <file alias="Dialog.qml">style/OmaBroadcastStyle/Dialog.qml</file>
+        <file alias="DialogButtonBox.qml">style/OmaBroadcastStyle/DialogButtonBox.qml</file>
+        <file alias="Frame.qml">style/OmaBroadcastStyle/Frame.qml</file>
+        <file alias="ItemDelegate.qml">style/OmaBroadcastStyle/ItemDelegate.qml</file>
+        <file alias="Label.qml">style/OmaBroadcastStyle/Label.qml</file>
+        <file alias="Menu.qml">style/OmaBroadcastStyle/Menu.qml</file>
+        <file alias="MenuBar.qml">style/OmaBroadcastStyle/MenuBar.qml</file>
+        <file alias="MenuBarItem.qml">style/OmaBroadcastStyle/MenuBarItem.qml</file>
+        <file alias="MenuItem.qml">style/OmaBroadcastStyle/MenuItem.qml</file>
+        <file alias="MenuSeparator.qml">style/OmaBroadcastStyle/MenuSeparator.qml</file>
+        <file alias="Pane.qml">style/OmaBroadcastStyle/Pane.qml</file>
+        <file alias="Popup.qml">style/OmaBroadcastStyle/Popup.qml</file>
+        <file alias="ProgressBar.qml">style/OmaBroadcastStyle/ProgressBar.qml</file>
+        <file alias="RadioButton.qml">style/OmaBroadcastStyle/RadioButton.qml</file>
+        <file alias="ScrollBar.qml">style/OmaBroadcastStyle/ScrollBar.qml</file>
+        <file alias="ScrollIndicator.qml">style/OmaBroadcastStyle/ScrollIndicator.qml</file>
+        <file alias="ScrollView.qml">style/OmaBroadcastStyle/ScrollView.qml</file>
+        <file alias="Slider.qml">style/OmaBroadcastStyle/Slider.qml</file>
+        <file alias="SpinBox.qml">style/OmaBroadcastStyle/SpinBox.qml</file>
+        <file alias="Switch.qml">style/OmaBroadcastStyle/Switch.qml</file>
+        <file alias="TabBar.qml">style/OmaBroadcastStyle/TabBar.qml</file>
+        <file alias="TabButton.qml">style/OmaBroadcastStyle/TabButton.qml</file>
+        <file alias="TextArea.qml">style/OmaBroadcastStyle/TextArea.qml</file>
+        <file alias="TextField.qml">style/OmaBroadcastStyle/TextField.qml</file>
+        <file alias="ToolButton.qml">style/OmaBroadcastStyle/ToolButton.qml</file>
+        <file alias="ToolSeparator.qml">style/OmaBroadcastStyle/ToolSeparator.qml</file>
+        <file alias="ToolTip.qml">style/OmaBroadcastStyle/ToolTip.qml</file>
+        <file alias="qmldir">style/OmaBroadcastStyle/qmldir</file>
+    </qresource>
+</RCC>

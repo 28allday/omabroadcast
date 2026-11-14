@@ -1,0 +1,97 @@
+# Maintainer: 28allday
+
+pkgname=omabroadcast
+pkgver=0.1.0
+pkgrel=62
+pkgdesc='Record, stream and compose live video on Omarchy'
+# x86-64 only: the carried FFmpeg is built with nasm and NVIDIA's encoders.
+arch=('x86_64')
+url='https://github.com/28allday/omabroadcast'
+# The app's own code is MIT; the FFmpeg it carries is built GPL v3 (--enable-gpl --enable-version3),
+# with what travels beside it, so the package as a whole is GPL v3: x264 and x265 come in under
+# their "or any later version". The icons are Lucide's (ISC), the Remove background weights MODNet's (Apache-2.0).
+license=('MIT' 'GPL-3.0-or-later' 'GPL-2.0-or-later' 'BSD-2-Clause' 'BSD-3-Clause' 'MPL-2.0' 'ISC' 'Apache-2.0' 'LicenseRef-AOMPL-1.0')
+# No install script: pacman's own hooks (gtk-update-icon-cache, desktop-file-utils) refresh
+# the icon cache and the desktop database when files land there.
+# No link-time optimisation: it breaks the carried FFmpeg's assembly at link
+# time ("relocation … recompile with -fPIC"), as Arch's own FFmpeg avoids.
+options=('!debug' '!lto')
+# Everything it needs is here, so `pacman -U` gives a working app on a bare system.
+# The program, its browser helper and the carried FFmpeg 9.1 link these. Its libraries are
+# frozen here while the system moves on, so each is named by soname where Arch offers one:
+# makepkg versions it from what was linked (libcrypto.so=3-64), and pacman objects to an update
+# that would stop the program starting. Arch offers none for gnutls, libdrm, rnnoise, mesa or Qt.
+depends=(# First, so that pacman has no choice of provider to ask about when what follows wants a font.
+         # No JACK is named: nothing here loads it. Only the system's ffmpeg below asks for one, and
+         # takes whichever is installed (pipewire-jack or jack2, which cannot be installed together).
+         'noto-fonts'
+         'libbz2.so' 'glibc' 'gnutls' 'libdrm' 'libgcc' 'libOpenGL.so' 'libGLX.so' 'libpipewire-0.3.so' 'libstdc++' 'libva.so' 'libva-drm.so'
+         'mesa' 'libcrypto.so' 'libopus.so'
+         'qt6-base' 'qt6-declarative' 'qt6-positioning' 'qt6-webchannel' 'qt6-webengine' 'rnnoise' 'libsnappy.so'
+         'libvulkan.so' 'libwayland-client.so' 'liblzma.so' 'libz.so'
+         # At run time: Qt's Wayland, SVG icons and picture formats.
+         'qt6-wayland' 'qt6-svg' 'qt6-imageformats'
+         # The share picker and file chooser, sound and video, stream keys, Draw region… on Hyprland.
+         'xdg-desktop-portal' 'xdg-desktop-portal-hyprland' 'xdg-desktop-portal-gtk' 'pipewire' 'pipewire-pulse' 'wireplumber'
+         'gnome-keyring' 'slurp'
+         # The graphics card's own video and Vulkan drivers (NVIDIA's come with its driver).
+         'intel-media-driver' 'vulkan-radeon' 'vulkan-intel'
+         # The interface's typefaces, and emoji in text sources.
+         'inter-font' 'ttf-jetbrains-mono-nerd' 'noto-fonts-emoji'
+         'hicolor-icon-theme'
+         # The browser helper's Qt WebEngine uses the system's.
+         'ffmpeg')
+# Not in the Arch repositories: it comes from its own releases.
+optdepends=('omashow: presentations from OmaShow decks (0.2.4 or newer steps them a click at a time)')
+makedepends=('gcc' 'make' 'qt6-base' 'qt6-declarative' 'qt6-tools' 'qt6-webengine' 'glslang' 'vulkan-headers' 'libpipewire' 'rnnoise' 'ffmpeg' 'wayland'
+             'git' 'nasm' 'clang' 'ffnvcodec-headers' 'spirv-headers'
+             # Travel beside the carried FFmpeg (bin/build-ffmpeg), so the package needs none of them.
+             'x264' 'x265' 'svt-av1' 'aom' 'dav1d' 'libvpx' 'srt')
+source=()
+sha256sums=()
+
+# Builds the working tree: ./bin/install runs it.
+build() {
+  cd "$startdir/.."
+  OMABROADCAST_PACKAGE=1 ./bin/build
+}
+
+package() {
+  cd "$startdir/.."
+  /usr/bin/install -Dm755 build/omabroadcast "$pkgdir/usr/bin/omabroadcast"
+  # The browser helper, built where Qt WebEngine is installed.
+  if [ -x build/browser/omabroadcast-browser ]; then
+    /usr/bin/install -Dm755 build/browser/omabroadcast-browser "$pkgdir/usr/lib/omabroadcast/omabroadcast-browser"
+  fi
+  # The FFmpeg 9.1 it carries: the libraries, those that travel beside them,
+  # the licences and what they were built from.
+  local ffmpeg=build/ffmpeg/usr/lib/omabroadcast/ffmpeg/lib
+  if [ -d "$ffmpeg" ]; then
+    /usr/bin/install -dm755 "$pkgdir/usr/lib/omabroadcast/ffmpeg/lib"
+    cp -P "$ffmpeg"/lib*.so.* "$pkgdir/usr/lib/omabroadcast/ffmpeg/lib/"
+    /usr/bin/install -Dm644 build/ffmpeg-src/COPYING.GPLv3 "$pkgdir/usr/share/licenses/$pkgname/ffmpeg/COPYING.GPLv3"
+    /usr/bin/install -Dm644 build/ffmpeg-src/LICENSE.md "$pkgdir/usr/share/licenses/$pkgname/ffmpeg/LICENSE.md"
+    # What it says it was built from, this app's commit and where all of it is.
+    local commit
+    commit=$(git rev-parse HEAD 2>/dev/null || echo unknown)
+    git diff --quiet HEAD 2>/dev/null || commit="$commit, with changes not yet committed"
+    /usr/bin/install -dm755 "$pkgdir/usr/share/licenses/$pkgname/ffmpeg"
+    {
+      cat build/ffmpeg/SOURCE
+      printf '\nOmaBroadcast, commit %s\n' "$commit"
+      printf 'The complete source of this package: %s/releases, beside the package, as %s\n' \
+        "$url" "$pkgname-$pkgver-$pkgrel-source.tar.xz"
+    } > "$pkgdir/usr/share/licenses/$pkgname/ffmpeg/SOURCE"
+    /usr/bin/install -Dm644 "$startdir"/ffmpeg/*.patch -t "$pkgdir/usr/share/licenses/$pkgname/ffmpeg/"
+    cp -r build/ffmpeg/licenses/. "$pkgdir/usr/share/licenses/$pkgname/ffmpeg/"
+  fi
+  /usr/bin/install -Dm644 LICENSE "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+  /usr/bin/install -Dm644 THIRD_PARTY.md "$pkgdir/usr/share/licenses/$pkgname/THIRD_PARTY.md"
+  /usr/bin/install -Dm644 src/ui/icons/LICENSE.lucide "$pkgdir/usr/share/licenses/$pkgname/LICENSE.lucide"
+  /usr/bin/install -Dm644 src/engine/models/LICENSE.MODNet "$pkgdir/usr/share/licenses/$pkgname/LICENSE.MODNet"
+  for protocol in src/protocols/*.xml; do
+    /usr/bin/install -Dm644 "$protocol" "$pkgdir/usr/share/licenses/$pkgname/protocols/${protocol##*/}"
+  done
+  /usr/bin/install -Dm644 "$startdir/omabroadcast.svg" "$pkgdir/usr/share/icons/hicolor/scalable/apps/omabroadcast.svg"
+  /usr/bin/install -Dm644 "$startdir/omabroadcast.desktop" "$pkgdir/usr/share/applications/omabroadcast.desktop"
+}
